@@ -1,0 +1,5 @@
+torch
+opencv-python
+numpy
+huggingface_hub
+torchvision
