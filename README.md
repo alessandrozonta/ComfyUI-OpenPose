@@ -51,4 +51,4 @@ This project is licensed under the GPL-3.0 License. See the [LICENSE](LICENSE) f
 ---
 ---
 
-Thank you for using the LayersSaver node for ComfyUI. We hope it enhances your image processing workflows!
+Thank you for using the OpenPose node for ComfyUI. We hope it enhances your image processing workflows!
