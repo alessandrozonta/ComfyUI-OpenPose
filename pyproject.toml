@@ -10,6 +10,6 @@ Repository = "https://github.com/alessandrozonta/ComfyUI-OpenPose"
 #  Used by Comfy Registry https://comfyregistry.org
 
 [tool.comfy]
-PublisherId = ""
+PublisherId = "@alezonta"
 DisplayName = "ComfyUI-OpenPose"
 Icon = ""
