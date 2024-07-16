@@ -9,7 +9,50 @@ from torchvision import transforms
 # Define a transform to convert the image to a tensor
 transform = transforms.ToTensor()
 
-def download_openpose_model_from_huggingface(model_name, output_directory="../../models/openpose"):
+# find folder with models
+def find_folder_upwards(start_dir, target_folder):
+    """
+    Search for a target folder starting from a specified directory and moving upwards through the directory tree.
+
+    This function starts from the `start_dir` directory and searches for the `target_folder` in the current directory.
+    If it does not find the `target_folder`, it moves up one level in the directory hierarchy and repeats the process.
+    This continues until the `target_folder` is found or the root directory is reached.
+
+    Parameters:
+    start_dir (str): The directory to start the search from.
+    target_folder (str): The name of the folder to search for.
+
+    Returns:
+    str: The path to the target folder if found. None if the folder is not found.
+
+    Example:
+    >>> find_folder_upwards('/home/user/projects/my_project', 'models')
+    '/home/user/models'
+    
+    >>> find_folder_upwards('/home/user/projects/my_project', 'non_existent_folder')
+    None
+
+    Note:
+    - This function assumes that `start_dir` is a valid directory path.
+    - If `start_dir` is already the root directory, the function will immediately return None if `target_folder` is not found in it.
+    """
+    current_dir = start_dir
+
+    while True:
+        # Check if the target folder exists in the current directory
+        if target_folder in os.listdir(current_dir):
+            target_path = os.path.join(current_dir, target_folder)
+            if os.path.isdir(target_path):
+                return target_path
+
+        # Move up one level in the directory tree
+        parent_dir = os.path.dirname(current_dir)
+        if current_dir == parent_dir:  # If current directory is root
+            return None
+        
+        current_dir = parent_dir
+
+def download_openpose_model_from_huggingface(model_name, output_directory):
     """Downloads an OpenPose model from the specified repository on Hugging Face Hub to the output directory.
 
     Args:
@@ -66,9 +109,13 @@ class OpenPoseNode:
             raise ValueError(f"Invalid typology: {typology}")
         
         model_name = "body_25.pth" if typology == "BODY_25" else "body_coco.pth"
-        self.model_path = f"../../models/openpose/{model_name}"
+        
+        # find path
+        model_path = find_folder_upwards(start_dir=os.getcwd(), target_folder="models")
+        
+        self.model_path = f"{model_path}/openpose/{model_name}"
         # load model 
-        download_openpose_model_from_huggingface(model_name=model_name)
+        download_openpose_model_from_huggingface(model_name=model_name, output_directory=f"{model_path}/openpose/")
         
         # Check if the input is a batch by looking at its first dimension
         if len(input_image.shape) > 3 or input_image.shape[0] > 1:
